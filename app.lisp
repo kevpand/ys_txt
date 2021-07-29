@@ -1,6 +1,9 @@
 (in-package :ys-txt)
 (in-readtable ys-txt-readtable)
 
+(defparameter *hour* 11)
+(defparameter *minute* 0)
+
 (defun grab-lyrics ()
   (alexandria:shuffle
    (remove-if #'(lambda (str) (str:emptyp str))
@@ -23,6 +26,6 @@
         (let* ((now (local-time:now))
                (hour (local-time:timestamp-hour now))
                (minute (local-time:timestamp-minute now)))
-          (when (and (= hour 11) (= minute 0))
-            (chirp:statuses/update (car *lyrics-db*))
-            (ys-txt (cdr db)))))))
+          (when (and (= hour *hour*) (= minute *minute*))
+            (chirp:statuses/update (first *lyrics-db*))
+            (ys-txt (rest db)))))))
