@@ -7,4 +7,7 @@
                (:file "app"))
   :depends-on (:chirp
                :str
+               :cl-fad
+               :alexandria
+               :local-time
                :named-readtables))
