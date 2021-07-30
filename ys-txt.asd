@@ -8,7 +8,6 @@
   :depends-on (:chirp
                :str
                :cl-fad
-               :bordeaux-threads
                :alexandria
                :local-time
                :named-readtables))
