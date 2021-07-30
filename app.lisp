@@ -1,8 +1,11 @@
 (in-package :ys-txt)
+
 (in-readtable ys-txt-readtable)
 
-(defparameter *hour* 11)
-(defparameter *minute* 0)
+(defparameter *hour* 23)
+
+(defun make-minute ()
+  (random 60))
 
 (defun grab-lyrics ()
   (alexandria:shuffle
@@ -12,18 +15,20 @@
                  (loop for file in files collect (str:lines (str:from-file file))))))))
 
 (defun ys-txt (lyrics &optional day)
-  (if (endp lyrics)
-      (ys-txt (grab-lyrics))
-      (loop
-        (let* ((now (local-time:now))
-               (current-day (local-time:timestamp-day now))
-               (hour (local-time:timestamp-hour now))
-               (minute (local-time:timestamp-minute now)))
-          (when (and (or (= current-day 1) (= day current-day))
-                     (= hour *hour*)
-                     (= minute *minute*))
-            (chirp:statuses/update (first lyrics))
-            (ys-txt (rest lyrics) (+ current-day 1)))))))
+  (let ((blessed-minute (make-minute)))
+    (if (endp lyrics)
+        (ys-txt (grab-lyrics))
+        (loop
+          (let* ((now (local-time:now))
+                 (current-day (local-time:timestamp-day now))
+                 (hour (local-time:timestamp-hour now))
+                 (minute (local-time:timestamp-minute now)))
+            (when (and (or (= current-day 1)
+                           (= day current-day))
+                       (= hour *hour*)
+                       (= minute blessed-minute))
+              (chirp:statuses/update (first lyrics))
+              (ys-txt (rest lyrics) (+ current-day 1))))))))
 
 (defun main ()
   (let* ((chirp:*oauth-api-key* $YS_API_KEY)
