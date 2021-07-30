@@ -1,8 +1,8 @@
 (in-package :ys-txt)
 (in-readtable ys-txt-readtable)
 
-(defparameter *hour* 11)
-(defparameter *minute* 0)
+(defparameter *hour* 6)
+(defparameter *minute* 10)
 
 (defun grab-lyrics ()
   (alexandria:shuffle
@@ -18,7 +18,7 @@
          (chirp:*oauth-access-secret* $YS_ACCESS_SECRET)
          (local-time:*default-timezone* local-time:+utc-zone+)
          (day (local-time:timestamp-day (local-time:now))))
-    (ys-txt (grab-lyrics) day)))
+    (ys-txt (grab-lyrics) 30)))
 
 (defun ys-txt (lyrics &optional day)
   (if (endp lyrics)
@@ -33,3 +33,5 @@
                      (= minute *minute*))
             (chirp:statuses/update (first lyrics))
             (ys-txt (rest lyrics) (+ current-day 1)))))))
+
+(main)
