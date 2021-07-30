@@ -21,7 +21,7 @@
   (let ((blessed-minute (make-minute))
         (blessed-hour (make-hour)))
     (if (endp lyrics)
-        (ys-txt (grab-lyrics))
+        (sb-ext:quit)
         (loop
           (let* ((now (local-time:now))
                  (current-day (local-time:timestamp-day now))
@@ -42,7 +42,7 @@
          (chirp:*oauth-access-secret* $YS_ACCESS_SECRET)
          (local-time:*default-timezone* local-time:+utc-zone+)
          (day (local-time:timestamp-day (local-time:now))))
-    (ys-txt (grab-lyrics) day t)))
+    (ys-txt (alexandria:shuffle (grab-lyrics)) day t)))
 
 (in-package :cl-user)
 
