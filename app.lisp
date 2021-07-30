@@ -1,8 +1,8 @@
 (in-package :ys-txt)
 (in-readtable ys-txt-readtable)
 
-(defparameter *hour* 7)
-(defparameter *minute* 25)
+(defparameter *hour* 11)
+(defparameter *minute* 0)
 
 (defun grab-lyrics ()
   (alexandria:shuffle
@@ -32,7 +32,7 @@
          (chirp:*oauth-access-secret* $YS_ACCESS_SECRET)
          (local-time:*default-timezone* local-time:+utc-zone+)
          (day (local-time:timestamp-day (local-time:now))))
-    (ys-txt (grab-lyrics) 30)))
+    (ys-txt (grab-lyrics) day)))
 
 (in-package :cl-user)
 
