@@ -1,8 +1,8 @@
 (in-package :ys-txt)
 (in-readtable ys-txt-readtable)
 
-(defparameter *hour* 6)
-(defparameter *minute* 50)
+(defparameter *hour* 7)
+(defparameter *minute* 25)
 
 (defun grab-lyrics ()
   (alexandria:shuffle
@@ -36,6 +36,5 @@
 
 (in-package :cl-user)
 
-(defun initialize-application (&key port)
-  (declare (ignore port))
-  (main))
+(defun heroku-toplevel ()
+  (ys-txt:main))
