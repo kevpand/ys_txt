@@ -2,7 +2,10 @@
 
 (in-readtable ys-txt-readtable)
 
-(defparameter *hour* 23)
+(defparameter *hours* '(3 13 17 23))
+
+(defun make-hour ()
+  (first (alexandria:shuffle *hours*)))
 
 (defun make-minute ()
   (random 60))
@@ -15,7 +18,8 @@
                  (loop for file in files collect (str:lines (str:from-file file))))))))
 
 (defun ys-txt (lyrics &optional day)
-  (let ((blessed-minute (make-minute)))
+  (let ((blessed-minute (make-minute))
+        (blessed-hour (make-hour)))
     (if (endp lyrics)
         (ys-txt (grab-lyrics))
         (loop
@@ -25,7 +29,7 @@
                  (minute (local-time:timestamp-minute now)))
             (when (and (or (= current-day 1)
                            (= day current-day))
-                       (= hour *hour*)
+                       (= hour blessed-hour)
                        (= minute blessed-minute))
               (chirp:statuses/update (first lyrics))
               (ys-txt (rest lyrics) (+ current-day 1))))))))
