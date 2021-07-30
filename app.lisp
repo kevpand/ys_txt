@@ -17,7 +17,7 @@
                (let ((files (cl-fad:list-directory "lyrics")))
                  (loop for file in files collect (str:lines (str:from-file file))))))))
 
-(defun ys-txt (lyrics &optional day)
+(defun ys-txt (lyrics &optional day first-run)
   (let ((blessed-minute (make-minute))
         (blessed-hour (make-hour)))
     (if (endp lyrics)
@@ -27,10 +27,11 @@
                  (current-day (local-time:timestamp-day now))
                  (hour (local-time:timestamp-hour now))
                  (minute (local-time:timestamp-minute now)))
-            (when (and (or (= current-day 1)
-                           (= day current-day))
-                       (= hour blessed-hour)
-                       (= minute blessed-minute))
+            (when (or first-run
+                      (and (or (= current-day 1)
+                               (= day current-day))
+                           (= hour blessed-hour)
+                           (= minute blessed-minute)))
               (chirp:statuses/update (first lyrics))
               (ys-txt (rest lyrics) (+ current-day 1))))))))
 
@@ -41,7 +42,7 @@
          (chirp:*oauth-access-secret* $YS_ACCESS_SECRET)
          (local-time:*default-timezone* local-time:+utc-zone+)
          (day (local-time:timestamp-day (local-time:now))))
-    (ys-txt (grab-lyrics) day)))
+    (ys-txt (grab-lyrics) day t)))
 
 (in-package :cl-user)
 
