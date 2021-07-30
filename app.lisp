@@ -2,7 +2,7 @@
 (in-readtable ys-txt-readtable)
 
 (defparameter *hour* 6)
-(defparameter *minute* 10)
+(defparameter *minute* 25)
 
 (defun grab-lyrics ()
   (alexandria:shuffle
@@ -34,4 +34,5 @@
             (chirp:statuses/update (first lyrics))
             (ys-txt (rest lyrics) (+ current-day 1)))))))
 
-(main)
+(defun heroku-toplevel ()
+  (main))
