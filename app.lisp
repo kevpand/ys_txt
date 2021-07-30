@@ -2,7 +2,7 @@
 (in-readtable ys-txt-readtable)
 
 (defparameter *hour* 6)
-(defparameter *minute* 25)
+(defparameter *minute* 50)
 
 (defun grab-lyrics ()
   (alexandria:shuffle
@@ -10,15 +10,6 @@
               (alexandria:flatten
                (let ((files (cl-fad:list-directory "lyrics")))
                  (loop for file in files collect (str:lines (str:from-file file))))))))
-
-(defun main ()
-  (let* ((chirp:*oauth-api-key* $YS_API_KEY)
-         (chirp:*oauth-api-secret* $YS_API_SECRET)
-         (chirp:*oauth-access-token* $YS_ACCESS_TOKEN)
-         (chirp:*oauth-access-secret* $YS_ACCESS_SECRET)
-         (local-time:*default-timezone* local-time:+utc-zone+)
-         (day (local-time:timestamp-day (local-time:now))))
-    (ys-txt (grab-lyrics) 30)))
 
 (defun ys-txt (lyrics &optional day)
   (if (endp lyrics)
@@ -34,5 +25,17 @@
             (chirp:statuses/update (first lyrics))
             (ys-txt (rest lyrics) (+ current-day 1)))))))
 
-(defun heroku-toplevel ()
+(defun main ()
+  (let* ((chirp:*oauth-api-key* $YS_API_KEY)
+         (chirp:*oauth-api-secret* $YS_API_SECRET)
+         (chirp:*oauth-access-token* $YS_ACCESS_TOKEN)
+         (chirp:*oauth-access-secret* $YS_ACCESS_SECRET)
+         (local-time:*default-timezone* local-time:+utc-zone+)
+         (day (local-time:timestamp-day (local-time:now))))
+    (ys-txt (grab-lyrics) 30)))
+
+(in-package :cl-user)
+
+(defun initialize-application (&key port)
+  (declare (ignore port))
   (main))
