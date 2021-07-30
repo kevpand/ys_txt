@@ -21,7 +21,7 @@
               (alexandria:flatten
                (let ((files (cl-fad:list-directory "lyrics")))
                  (loop for file in files collect (str:lines (str:from-file file))))))
-   (random 100)))
+   (random (parse-integer $RANDOM_NUMBER))))
 
 (defun ys-txt (lyrics &optional day first-run)
   (let ((blessed-minute (make-minute))
