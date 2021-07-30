@@ -10,12 +10,18 @@
 (defun make-minute ()
   (random 60))
 
+(defun shuffle (list &optional n)
+  (if (zerop n)
+      list
+      (shuffle (alexandria:shuffle list) (- n 1))))
+
 (defun grab-lyrics ()
-  (alexandria:shuffle
+  (shuffle
    (remove-if #'(lambda (str) (str:emptyp str))
               (alexandria:flatten
                (let ((files (cl-fad:list-directory "lyrics")))
-                 (loop for file in files collect (str:lines (str:from-file file))))))))
+                 (loop for file in files collect (str:lines (str:from-file file))))))
+   (random 100)))
 
 (defun ys-txt (lyrics &optional day first-run)
   (let ((blessed-minute (make-minute))
@@ -42,7 +48,7 @@
          (chirp:*oauth-access-secret* $YS_ACCESS_SECRET)
          (local-time:*default-timezone* local-time:+utc-zone+)
          (day (local-time:timestamp-day (local-time:now))))
-    (ys-txt (alexandria:shuffle (grab-lyrics)) day t)))
+    (ys-txt (grab-lyrics) day t)))
 
 (in-package :cl-user)
 
