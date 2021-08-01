@@ -10,27 +10,21 @@
 (defun make-minute ()
   (random 60))
 
-(defun shuffle (list &optional n)
-  (if (zerop n)
-      list
-      (shuffle (alexandria:shuffle list) (- n 1))))
-
 (defun grab-lyrics ()
-  (shuffle
+  (alexandria:shuffle
    (remove-if #'(lambda (str) (str:emptyp str))
               (alexandria:flatten
                (let ((files (cl-fad:list-directory "lyrics")))
-                 (loop for file in files collect (str:lines (str:from-file file))))))
-   (random (parse-integer $RANDOM_NUMBER))))
+                 (loop for file in files collect (str:lines (str:from-file file))))))))
 
 (defun ys-txt (lyrics &optional day first-run)
   (let ((blessed-minute (make-minute))
-        (blessed-hour (make-hour)))
+        (blessed-hour (make-hour))
+        (current-day (local-time:timestamp-day (local-time:now))))
     (if (endp lyrics)
-        (sb-ext:quit)
+        (ys-txt (grab-lyrics) current-day)
         (loop
           (let* ((now (local-time:now))
-                 (current-day (local-time:timestamp-day now))
                  (hour (local-time:timestamp-hour now))
                  (minute (local-time:timestamp-minute now)))
             (when (or first-run
@@ -49,8 +43,3 @@
          (local-time:*default-timezone* local-time:+utc-zone+)
          (day (local-time:timestamp-day (local-time:now))))
     (ys-txt (grab-lyrics) day t)))
-
-(in-package :cl-user)
-
-(defun heroku-toplevel ()
-  (ys-txt:main))
